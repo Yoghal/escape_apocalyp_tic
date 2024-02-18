@@ -202,6 +202,7 @@ carAnimObstacleInRoad=false
 score=0
 listDisplayScore={}
 compteur={food=0,fuelCan=0,ammoBag=0,wolf=0,bandit=0}
+deathTo=""
 
 function CreateScene(pNameScene,pfUpdate,pfDraw,pfStart,pfEnd)
 	sceneManager[pNameScene]={
@@ -1219,6 +1220,11 @@ function Player_Update()
 	end
 	Player_SetHunger(-dt)
 	if player.life<=0 or player.hunger<=0 then
+		if player.life<=0 then
+			deathTo="You're dead"
+		elseif player.hunger<=0 then
+			deathTo="You died of hunger"
+		end
 		SwitchScene("gameover")
 	end
 end
@@ -1841,6 +1847,11 @@ function Car_Anim_SceneWorldMap_Update()
 		timerPauseCarAnim=timerPauseCarAnim+dt
 		if timerPauseCarAnim>=1 then
 			timerPauseCarAnim=0
+			if car.currentFuel<=0 then
+				deathTo="The car is out of fuel"
+			elseif car.currentDamage<=0 then
+				deathTo="The car exploded"
+			end
 			SwitchScene("gameover")
 		end
 	else
@@ -1929,7 +1940,8 @@ function TimerAtomicBomb_Update()
 	end
 
 	if timerAtomicBomb.min.u<=0 and timerAtomicBomb.min.d<=0 and
-	timerAtomicBomb.sec.u<=0 and timerAtomicBomb.sec.d<=0 then
+		timerAtomicBomb.sec.u<=0 and timerAtomicBomb.sec.d<=0 then
+		deathTo="You didn't survive the apocalypse"
 		SwitchScene("gameover")
 		return
 	end
@@ -2112,6 +2124,7 @@ function Game_Generate()
 	Player_Init()
 	TimerAtomicBomb_Init()
 	Score_Init()
+	deathTo=""
 end
 
 function TIC()
@@ -2321,7 +2334,7 @@ function SceneGameOver_Draw()
 	local text="Game Over"
 	local y=1
 	print(text,(SCREEN.w-#text*SIZEFONT*4)/2,y,COLORID.WHITE,false,4)
-	text="You didn't survive the apocalypse"
+	text=deathTo
 	y=y+24
 	print(text,(SCREEN.w-#text*SIZEFONT)/2,y,COLORID.WHITE)
 	Score_Recap_Draw()
