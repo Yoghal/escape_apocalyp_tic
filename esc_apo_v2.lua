@@ -129,7 +129,7 @@ function PFAStar(pSLine,pSCol,pELine,pECol,pGrid)
 			end
 		end
 	end
-	return nil;
+	return nil
 end
 
 function Lerp(pStart,pEnd,pPct)
@@ -167,8 +167,10 @@ worldMap={listMap={},nbMap=5,numMap=1,currentMap=nil}
 rndElementMap={}
 for i=1,5 do rndElementMap[i]={wolf=0,bandit=0,obstacle=0} end
 
+dir={r="right",l="left",d="down",u="up"}
+
 player={
-	l=0,c=0,dir="down",life=100,lifeMax=100,hunger=100,hungerMax=100,
+	l=0,c=0,dir=dir.d,life=100,lifeMax=100,hunger=100,hungerMax=100,
 	ammo=0,recul=false,firstBtnMove="",nbAxe=3
 }
 
@@ -253,13 +255,13 @@ function UpdateTransitionScene(pTypeTransition,pbWithSST)
 end
 
 function UpdateScene()
-	local currentScene=sceneManager[sceneManager.currentScene]
+	local cSc=sceneManager[sceneManager.currentScene]
 	if sceneManager.stateScene=="principal" then
-		currentScene.fUpdate()
+		cSc.fUpdate()
 	elseif sceneManager.stateScene=="transitionIn" then
-		UpdateTransitionScene(currentScene.transitionIn,true)
+		UpdateTransitionScene(cSc.transitionIn,true)
 	elseif sceneManager.stateScene=="transitionOut" then
-		UpdateTransitionScene(currentScene.transitionOut,true)
+		UpdateTransitionScene(cSc.transitionOut,true)
 	end
 end
 
@@ -268,21 +270,21 @@ function DrawScene()
 end
 
 function StateSceneTransition()
-	local currentScene=sceneManager[sceneManager.currentScene]
+	local cSc=sceneManager[sceneManager.currentScene]
 	if sceneManager.stateScene=="principal" then
-		InitTransitionScene(currentScene.transitionIn,"in")
-		InitTransitionScene(currentScene.transitionOut,"out")
+		InitTransitionScene(cSc.transitionIn,"in")
+		InitTransitionScene(cSc.transitionOut,"out")
 		sceneManager.stateScene="transitionOut"
 	elseif sceneManager.stateScene=="transitionOut" then
-		if currentScene.transitionOut.finish or not currentScene.transitionOut.activate then
-			currentScene.transitionOut.finish=false
+		if cSc.transitionOut.finish or not cSc.transitionOut.activate then
+			cSc.transitionOut.finish=false
 			ChangeCurrentSceneToNextScene()
 			UpdateTransitionScene(sceneManager[sceneManager.currentScene].transitionIn,false)
 			sceneManager.stateScene="transitionIn"
 		end
 	elseif sceneManager.stateScene=="transitionIn" then
-		if currentScene.transitionIn.finish or not currentScene.transitionIn.activate then
-			currentScene.transitionIn.finish=false
+		if cSc.transitionIn.finish or not cSc.transitionIn.activate then
+			cSc.transitionIn.finish=false
 			InitTransitionScene(sceneManager[sceneManager.swapScene].transitionIn,"in")
 			InitTransitionScene(sceneManager[sceneManager.swapScene].transitionOut,"out")
 			sceneManager.stateScene="principal"
@@ -403,13 +405,13 @@ function Paricle_Emitter_Walk(pLine,pCol,pDir)
 	local rndNbParticle=rnd(3,6)
 	local x,y=Map_PosLineColToPx(worldMap.currentMap,pCol,pLine)
 	local ap,ab=0,0
-	if pDir=="right" then
+	if pDir==dir.r then
 		ab,ap=3*PI/4,PI/2
-	elseif pDir=="left" then
+	elseif pDir==dir.l then
 		ab,ap=-PI/4,PI/2
-	elseif pDir=="down" then
+	elseif pDir==dir.d then
 		ab,ap=-PI/4,-PI/2
-	elseif pDir=="up" then
+	elseif pDir==dir.u then
 		ab,ap=PI/4,PI/2
 	end
 	for i=1,rndNbParticle do
@@ -423,16 +425,16 @@ function Paricle_Emitter_Shot(pLine,pCol,pDir)
 	local x,y=Map_PosLineColToPx(worldMap.currentMap,pCol,pLine)
 	local ap,ab=0,0
 	local sx,sy=0,0
-	if pDir=="right" then
+	if pDir==dir.r then
 		ab,ap=-PI/4,PI/2
 		sx,sy=SIZESPR,SIZESPR/2
-	elseif pDir=="left" then
+	elseif pDir==dir.l then
 		ab,ap=3*PI/4,PI/2
 		sx,sy=0,SIZESPR/2
-	elseif pDir=="down" then
+	elseif pDir==dir.d then
 		ab,ap=PI/4,PI/2
 		sx,sy=SIZESPR/2,SIZESPR
-	elseif pDir=="up" then
+	elseif pDir==dir.u then
 		ab,ap=-PI/4,-PI/2
 		sx,sy=SIZESPR/2,0
 	end
@@ -446,13 +448,13 @@ function Paricle_Emitter_BulletFly(pLine,pCol,pDir)
 	local rndNbParticle=rnd(5,7)
 	local x,y=Map_PosLineColToPx(worldMap.currentMap,pCol,pLine)
 	local ap,ab=0,0
-	if pDir=="right" then
+	if pDir==dir.r then
 		ab,ap=3*PI/4,PI/2
-	elseif pDir=="left" then
+	elseif pDir==dir.l then
 		ab,ap=-PI/4,PI/2
-	elseif pDir=="down" then
+	elseif pDir==dir.d then
 		ab,ap=-PI/4,-PI/2
-	elseif pDir=="up" then
+	elseif pDir==dir.u then
 		ab,ap=PI/4,PI/2
 	end
 	for i=1,rndNbParticle do
@@ -466,16 +468,16 @@ function Paricle_Emitter_BulletDie(pLine,pCol,pDir)
 	local x,y=Map_PosLineColToPx(worldMap.currentMap,pCol,pLine)
 	local ap,ab=0,0
 	local sx,sy=0,0
-	if pDir=="right" then
+	if pDir==dir.r then
 		ab,ap=PI/2,PI
 		sx,sy=0,SIZESPR/2
-	elseif pDir=="left" then
+	elseif pDir==dir.l then
 		ab,ap=PI/2,-PI
 		sx,sy=SIZESPR,SIZESPR/2
-	elseif pDir=="down" then
+	elseif pDir==dir.d then
 		ab,ap=0,-PI
 		sx,sy=SIZESPR/2,0
-	elseif pDir=="up" then
+	elseif pDir==dir.u then
 		ab,ap=0,PI
 		sx,sy=SIZESPR/2,SIZESPR
 	end
@@ -489,13 +491,13 @@ function Paricle_Emitter_Blood(pLine,pCol,pDir)
 	local rndNbParticle=rnd(25,50)
 	local x,y=Map_PosLineColToPx(worldMap.currentMap,pCol,pLine)
 	local ap,ab=0,0
-	if pDir=="right" then
+	if pDir==dir.r then
 		ab,ap=PI/2,-PI
-	elseif pDir=="left" then
+	elseif pDir==dir.l then
 		ab,ap=PI/2,PI
-	elseif pDir=="down" then
+	elseif pDir==dir.d then
 		ab,ap=0,PI
-	elseif pDir=="up" then
+	elseif pDir==dir.u then
 		ab,ap=0,-PI
 	end
 	for i=1,rndNbParticle do
@@ -920,10 +922,10 @@ end
 
 function Bullet_Create(pLine,pCol,pDir,pBelong)
 	local new={l=pLine,c=pCol,dir=pDir,belong=pBelong,rotation=0}
-	if new.dir=="right" then new.rotation=0
-	elseif new.dir=="left" then new.rotation=2
-	elseif new.dir=="down" then new.rotation=1
-	elseif new.dir=="up" then new.rotation=3 end
+	if new.dir==dir.r then new.rotation=0
+	elseif new.dir==dir.l then new.rotation=2
+	elseif new.dir==dir.d then new.rotation=1
+	elseif new.dir==dir.u then new.rotation=3 end
 	table.insert(listBullet,new)
 end
 
@@ -966,13 +968,13 @@ end
 function Bullet_Update()
 	for i=#listBullet,1,-1 do
 		local bullet=listBullet[i]
-		if bullet.dir=="right" then
+		if bullet.dir==dir.r then
 			bullet.c=bullet.c+1
-		elseif bullet.dir=="left" then
+		elseif bullet.dir==dir.l then
 			bullet.c=bullet.c-1
-		elseif bullet.dir=="down" then
+		elseif bullet.dir==dir.d then
 			bullet.l=bullet.l+1
-		elseif bullet.dir=="up" then
+		elseif bullet.dir==dir.u then
 			bullet.l=bullet.l-1
 		end
 		if Bullet_IntersectElement(bullet) then
@@ -994,7 +996,7 @@ end
 function Player_LoadMap()
 	player.l=safetyZone.l
 	player.c=safetyZone.c
-	player.dir="down"
+	player.dir=dir.d
 	player.firstBtnMove=""
 	Map_SetIndex(worldMap.currentMap,player.l,player.c,INDEXMAP.player)
 end
@@ -1111,13 +1113,13 @@ function Player_Shot()
 		player.recul=true
 		Bullet_Create(player.l,player.c,player.dir,"player")
 		Player_SetAmmo(-1)
-		if player.dir=="right" then
+		if player.dir==dir.r then
 			bMinX,bMaxX,bMinY,bMaxY=-1,0,0,0
-		elseif player.dir=="left" then
+		elseif player.dir==dir.l then
 			bMinX,bMaxX,bMinY,bMaxY=0,1,0,0
-		elseif player.dir=="down" then
+		elseif player.dir==dir.d then
 			bMinX,bMaxX,bMinY,bMaxY=0,0,-1,0
-		elseif player.dir=="up" then
+		elseif player.dir==dir.u then
 			bMinX,bMaxX,bMinY,bMaxY=0,0,0,1
 		end
 		ScreenShake_ActivatePro(0.2,bMinX,bMaxX,bMinY,bMaxY)
@@ -1132,16 +1134,16 @@ function Player_DestroyObstacle()
 	local lineNeighbor=0
 	local colNeighbor=0
 	local bMinX,bMaxX,bMinY,bMaxY=-1,1,-1,1
-	if player.dir=="right" and player.c<worldMap.currentMap.col then
+	if player.dir==dir.r and player.c<worldMap.currentMap.col then
 		colNeighbor=1
 		bMinX,bMaxX,bMinY,bMaxY=-1,0,0,0
-	elseif player.dir=="left" and player.c>1 then
+	elseif player.dir==dir.l and player.c>1 then
 		colNeighbor=-1
 		bMinX,bMaxX,bMinY,bMaxY=0,1,0,0
-	elseif player.dir=="down" and player.l<worldMap.currentMap.line then
+	elseif player.dir==dir.d and player.l<worldMap.currentMap.line then
 		lineNeighbor=1
 		bMinX,bMaxX,bMinY,bMaxY=0,0,-1,0
-	elseif player.dir=="up" and player.l>1 then
+	elseif player.dir==dir.u and player.l>1 then
 		lineNeighbor=-1
 		bMinX,bMaxX,bMinY,bMaxY=0,0,0,1
 	end
@@ -1167,10 +1169,10 @@ end
 function Player_Update_FirstBtnMove()
 	local isr=btnState.isReleased
 	local pfbm=player.firstBtnMove
-	if (isr.up and pfbm=="up") or
-		(isr.down and pfbm=="down") or
-		(isr.left and pfbm=="left") or
-		(isr.right and pfbm=="right") then
+	if (isr.up and pfbm==dir.u) or
+		(isr.down and pfbm==dir.d) or
+		(isr.left and pfbm==dir.l) or
+		(isr.right and pfbm==dir.r) then
 		player.firstBtnMove=""
 	end
 end
@@ -1191,10 +1193,10 @@ function Player_Update()
 	local btnSt=btnState.isDown
 	player.recul=false
 	Player_Update_FirstBtnMove()
-	Player_Update_Move(BTNID.up,btnSt.down,"up",-1,0)
-	Player_Update_Move(BTNID.down,btnSt.up,"down",1,0)
-	Player_Update_Move(BTNID.left,btnSt.right,"left",0,-1)
-	Player_Update_Move(BTNID.right,btnSt.left,"right",0,1)
+	Player_Update_Move(BTNID.up,btnSt.down,dir.u,-1,0)
+	Player_Update_Move(BTNID.down,btnSt.up,dir.d,1,0)
+	Player_Update_Move(BTNID.left,btnSt.right,dir.l,0,-1)
+	Player_Update_Move(BTNID.right,btnSt.left,dir.r,0,1)
 	if btnp(BTNID.a) then Player_Shot() end
 	if btnp(BTNID.b) and player.nbAxe>0 then
 		Player_DestroyObstacle()
@@ -1214,16 +1216,16 @@ function Player_Draw()
 	local x,y=Map_PosLineColToPx(worldMap.currentMap,player.c,player.l)
 	local rx,ry=0,0
 	local index=273
-	if player.dir=="right" then
+	if player.dir==dir.r then
 		index=274
 		if player.recul then rx=-1 end
-	elseif player.dir=="left" then
+	elseif player.dir==dir.l then
 		index=275
 		if player.recul then rx=1 end
-	elseif player.dir=="down" then
+	elseif player.dir==dir.d then
 		index=276
 		if player.recul then ry=-1 end
-	elseif player.dir=="up" then
+	elseif player.dir==dir.u then
 		index=277
 		if player.recul then ry=1 end
 	end
@@ -1264,7 +1266,7 @@ function Player_DrawGUI()
 end
 
 function Wolf_Create(pLine,pCol)
-	table.insert(listWolf,{l=pLine,c=pCol,dir="right",state="normal",timerMove=0,durationMove=rnd(100,200)/100})
+	table.insert(listWolf,{l=pLine,c=pCol,dir=dir.r,state="normal",timerMove=0,durationMove=rnd(100,200)/100})
 end
 
 function Wolf_Move(pWolf,pAmountLine,pAmountCol)
@@ -1272,13 +1274,13 @@ function Wolf_Move(pWolf,pAmountLine,pAmountCol)
 	pWolf.l=pWolf.l+pAmountLine
 	pWolf.c=pWolf.c+pAmountCol
 	if pAmountCol>0 then
-		pWolf.dir="right"
+		pWolf.dir=dir.r
 	elseif pAmountLine>0 then
-		pWolf.dir="down"
+		pWolf.dir=dir.d
 	elseif pAmountCol<0 then
-		pWolf.dir="left"
+		pWolf.dir=dir.l
 	elseif pAmountLine<0 then
-		pWolf.dir="up"
+		pWolf.dir=dir.u
 	end
 	if Wolf_IntersectElement(pWolf)==-1 then
 		pWolf.l=oldLine
@@ -1374,13 +1376,13 @@ function Wolf_Draw()
 	for i,v in ipairs(listWolf) do
 		local x,y=Map_PosLineColToPx(worldMap.currentMap,v.c,v.l)
 		local index=306
-		if v.dir=="right" then
+		if v.dir==dir.r then
 			index=306
-		elseif v.dir=="left" then
+		elseif v.dir==dir.l then
 			index=307
-		elseif v.dir=="down" then
+		elseif v.dir==dir.d then
 			index=308
-		elseif v.dir=="up" then
+		elseif v.dir==dir.u then
 			index=309
 		end
 		spr(index,x+scSh.x,y+scSh.y,0)
@@ -1389,7 +1391,7 @@ end
 
 function Bandit_Create(pLine,pCol)
 	table.insert(listBandit,{
-		l=pLine,c=pCol,dir="right",state="normal",timerMove=0,
+		l=pLine,c=pCol,dir=dir.r,state="normal",timerMove=0,
 		durationMove=rnd(100,200)/100,timerShot=0,durationShot=rnd(40,60)/100,
 		recul=false,targetLastPosPlayer={l=-1,c=-1}
 	})
@@ -1400,13 +1402,13 @@ function Bandit_Move(pBandit,pAmountLine,pAmountCol)
 	pBandit.l=pBandit.l+pAmountLine
 	pBandit.c=pBandit.c+pAmountCol
 	if pAmountCol>0 then
-		pBandit.dir="right"
+		pBandit.dir=dir.r
 	elseif pAmountLine>0 then
-		pBandit.dir="down"
+		pBandit.dir=dir.d
 	elseif pAmountCol<0 then
-		pBandit.dir="left"
+		pBandit.dir=dir.l
 	elseif pAmountLine<0 then
-		pBandit.dir="up"
+		pBandit.dir=dir.u
 	end
 
 	if Bandit_IntersectElement(pBandit)==-1 then
@@ -1459,22 +1461,22 @@ end
 
 function Bandit_DetectionElement(pBandit,pRayonLong,pRayonLarg,pElementC,pElementL)
 	local minX,minY,maxX,maxY=0,0,0,0
-	if pBandit.dir=="right" then
+	if pBandit.dir==dir.r then
 		minX=pBandit.c
 		minY=pBandit.l-pRayonLarg
 		maxX=pBandit.c+pRayonLong
 		maxY=pBandit.l+pRayonLarg
-	elseif pBandit.dir=="left" then
+	elseif pBandit.dir==dir.l then
 		minX=pBandit.c-pRayonLong
 		minY=pBandit.l-pRayonLarg
 		maxX=pBandit.c
 		maxY=pBandit.l+pRayonLarg
-	elseif pBandit.dir=="down" then
+	elseif pBandit.dir==dir.d then
 		minX=pBandit.c-pRayonLarg
 		minY=pBandit.l
 		maxX=pBandit.c+pRayonLarg
 		maxY=pBandit.l+pRayonLong
-	elseif pBandit.dir=="up" then
+	elseif pBandit.dir==dir.u then
 		minX=pBandit.c-pRayonLarg
 		minY=pBandit.l-pRayonLong
 		maxX=pBandit.c+pRayonLarg
@@ -1489,13 +1491,13 @@ function Bandit_DetectionElement(pBandit,pRayonLong,pRayonLarg,pElementC,pElemen
 end
 
 function Bandit_DetectionAttack(pBandit,pPlayerOrNot)
-	if pBandit.dir=="right" then
+	if pBandit.dir==dir.r then
 		return pBandit.l==pPlayerOrNot.l
-	elseif pBandit.dir=="left" then
+	elseif pBandit.dir==dir.l then
 		return pBandit.l==pPlayerOrNot.l
-	elseif pBandit.dir=="down" then
+	elseif pBandit.dir==dir.d then
 		return pBandit.c==pPlayerOrNot.c
-	elseif pBandit.dir=="up" then
+	elseif pBandit.dir==dir.u then
 		return pBandit.c==pPlayerOrNot.c
 	end
 	return false
@@ -1583,16 +1585,16 @@ function Bandit_Draw()
 		local x,y=Map_PosLineColToPx(worldMap.currentMap,v.c,v.l)
 		local rx,ry=0,0
 		local index=289
-		if v.dir=="right" then
+		if v.dir==dir.r then
 			index=290
 			if v.recul then rx=-1 end
-		elseif v.dir=="left" then
+		elseif v.dir==dir.l then
 			index=291
 			if v.recul then rx=1 end
-		elseif v.dir=="down" then
+		elseif v.dir==dir.d then
 			index=292
 			if v.recul then ry=-1 end
-		elseif v.dir=="up" then
+		elseif v.dir==dir.u then
 			index=293
 			if v.recul then ry=1 end
 		end
@@ -1629,36 +1631,37 @@ end
 function Dead_CreatePro(pLine,pCol,pDirBullet,pDirElement,pIndexR,pIndexL,pIndexD,pIndexU)
 	local x,y=Map_PosLineColToPx(worldMap.currentMap,pCol,pLine)
 	local ab,ap,flip=0,0,0
+	local r,l,d,u=dir.r,dir.l,dir.d,dir.u
 	local index=pIndexR
-	if pDirBullet=="right" then
+	if pDirBullet==r then
 		ab,ap=-PI/4,PI/2
-		if pDirElement=="right" or pDirElement=="down" then
+		if pDirElement==r or pDirElement==d then
 			index=pIndexL
-		elseif pDirElement=="left" or pDirElement=="up" then
+		elseif pDirElement==l or pDirElement==u then
 			index=pIndexR
 			flip=1
 		end
-	elseif pDirBullet=="left" then
+	elseif pDirBullet==l then
 		ab,ap=3*PI/4,PI/2
-		if pDirElement=="right" or pDirElement=="down" then
+		if pDirElement==r or pDirElement==d then
 			index=pIndexR
-		elseif pDirElement=="left" or pDirElement=="up" then
+		elseif pDirElement==l or pDirElement==u then
 			index=pIndexL
 			flip=1
 		end
-	elseif pDirBullet=="down" then
+	elseif pDirBullet==d then
 		ab,ap=PI/4,PI/2
 		flip=2
-		if pDirElement=="right" or pDirElement=="left" or pDirElement=="up" then
+		if pDirElement==r or pDirElement==l or pDirElement==u then
 			index=pIndexD
-		elseif pDirElement=="down" then
+		elseif pDirElement==d then
 			index=pIndexU
 		end
-	elseif pDirBullet=="up" then
+	elseif pDirBullet==u then
 		ab,ap=-PI/4,-PI/2
-		if pDirElement=="right" or pDirElement=="left" or pDirElement=="down" then
+		if pDirElement==r or pDirElement==l or pDirElement==d then
 			index=pIndexD
-		elseif pDirElement=="up" then
+		elseif pDirElement==u then
 			index=pIndexU
 		end
 	end
@@ -1825,26 +1828,27 @@ function Car_SetMove(pNumMove)
 	sfx(10)
 end
 
+function Car_UpdateAux(pB,pE,pfTween)
+	timerCarAnim=timerCarAnim+dt
+	car.x=pfTween(pB,pE,timerCarAnim,2)
+	Paricle_Emitter_CarMove()
+	if timerCarAnim>=2 then
+		timerCarAnim=0
+		car.x=pE
+		sfx(63)
+		return true
+	end
+	return false
+end
+
 function Car_Update()
 	local midMap=worldMap.currentMap.offSet.x+safetyZone.c*(SIZESPR-1)
 	if phaseAnimMoveCar=="move" then
-		timerCarAnim=timerCarAnim+dt
-		car.x=Tween_EaseOutSine(-SIZESPR*2,midMap,timerCarAnim,2)
-		Paricle_Emitter_CarMove()
-		if timerCarAnim>=2 then
-			timerCarAnim=0
-			car.x=midMap
-			sfx(63)
+		if Car_UpdateAux(-SIZESPR*2,midMap,Tween_EaseOutSine) then
 			phaseAnimMoveCar="stop"
 		end
 	elseif phaseAnimMoveCar=="move2" then
-		timerCarAnim=timerCarAnim+dt
-		car.x=Tween_EaseInSine(midMap,SCREEN.w,timerCarAnim,2)
-		Paricle_Emitter_CarMove()
-		if timerCarAnim>=2 then
-			timerCarAnim=0
-			car.x=SCREEN.w
-			sfx(63)
+		if Car_UpdateAux(midMap,SCREEN.w,Tween_EaseInSine) then
 			SwitchScene("worldmap")
 		end
 	end
@@ -2014,7 +2018,7 @@ function TimerAtomicBomb_Update()
 		TimerAtomicBomb_UpdateAux(sec,1,3,1)
 		TimerAtomicBomb_UpdateAux(sec,0,2,2)
 	elseif (sec.u==0 and sec.d==3) or (sec.u==0 and sec.d==0) then
-		ScreenShake_ActivatePro(0.1,-1,1,-1,1)
+		ScreenShake_Activate(0.1)
 		backGround=COLORID.RED2
 	end
 	if min.u<=0 and min.d<=0 and sec.u<=0 and sec.d<=0 then
@@ -2045,21 +2049,20 @@ end
 
 function TimerAtomicBomb_DrawGUI(pOffSetX,pOffSetY,pScale)
 	local y=pOffSetY+scSh.y
-	local scale=pScale
 	local x=pOffSetX+scSh.x
 	local min=timerAtomicBomb.min
 	local sec=timerAtomicBomb.sec
-	spr(48,x,y,0,scale,0,0,5,5)
-	y=y+SIZESPR*2*scale
-	spr(1+min.d,x,y,0,scale)
-	x=x+SIZESPR*scale
-	spr(1+min.u,x,y,0,scale)
-	x=x+SIZESPR*scale
-	spr(11,x,y,0,scale)
-	x=x+SIZESPR*scale
-	spr(1+sec.d,x,y,0,scale)
-	x=x+SIZESPR*scale
-	spr(1+sec.u,x,y,0,scale)
+	spr(48,x,y,0,pScale,0,0,5,5)
+	y=y+SIZESPR*2*pScale
+	spr(1+min.d,x,y,0,pScale)
+	x=x+SIZESPR*pScale
+	spr(1+min.u,x,y,0,pScale)
+	x=x+SIZESPR*pScale
+	spr(11,x,y,0,pScale)
+	x=x+SIZESPR*pScale
+	spr(1+sec.d,x,y,0,pScale)
+	x=x+SIZESPR*pScale
+	spr(1+sec.u,x,y,0,pScale)
 end
 
 function Score_Init()
@@ -2099,38 +2102,39 @@ function Score_Recap_Calcul(pVD)
 end
 
 function Score_Recap_Draw()
-	local x,y=1,32
+	local x,y,c=1,32,COLORID.WHITE
+	local xp=x+SIZESPR+2
 	spr(289,x,y,0)
-	print("x"..compteur.bandit.." x40",x+SIZESPR+2,y+2,COLORID.WHITE)
+	print("x"..compteur.bandit.." x40",xp,y+2,c)
 	y=y+SIZESPR+1
 	spr(306,x,y,0)
-	print("x"..compteur.wolf.." x20",x+SIZESPR+2,y+2,COLORID.WHITE)
+	print("x"..compteur.wolf.." x20",xp,y+2,c)
 	y=y+SIZESPR+1
 	spr(260,x,y,0)
-	print("x"..compteur.food.." x100",x+SIZESPR+2,y+2,COLORID.WHITE)
+	print("x"..compteur.food.." x100",xp,y+2,c)
 	y=y+SIZESPR+1
 	spr(263,x,y,0)
-	print("x"..compteur.ammoBag.." x10",x+SIZESPR+2,y+2,COLORID.WHITE)
+	print("x"..compteur.ammoBag.." x10",xp,y+2,c)
 	y=y+SIZESPR+1
 	spr(258,x,y,0)
-	print("x"..compteur.fuelCan.." x50",x+SIZESPR+2,y+2,COLORID.WHITE)
+	print("x"..compteur.fuelCan.." x50",xp,y+2,c)
 	y=y+SIZESPR+1
 	spr(334,x,y,0)
-	print("x"..player.life.." x10",x+SIZESPR+2,y+2,COLORID.WHITE)
+	print("x"..player.life.." x10",xp,y+2,c)
 	y=y+SIZESPR+1
 	spr(262,x,y,0)
-	print("x"..flr(player.hunger).." x5",x+SIZESPR+2,y+2,COLORID.WHITE)
+	print("x"..flr(player.hunger).." x5",xp,y+2,c)
 	y=y+SIZESPR+1
 	spr(349,x,y,0)
-	print("x"..car.currentFuel.." x2",x+SIZESPR+2,y+2,COLORID.WHITE)
+	print("x"..car.currentFuel.." x2",xp,y+2,c)
 	y=y+SIZESPR+1
 	spr(350,x,y,0)
-	print("x"..player.ammo.." x1",x+SIZESPR+2,y+2,COLORID.WHITE)
+	print("x"..player.ammo.." x1",xp,y+2,c)
 	local text="+"..compteur.timerAB
 	y=y+SIZESPR+2
 	TimerAtomicBomb_DrawGUI(SCREEN.w-SIZESPR*10-1,(SCREEN.h-SIZESPR*10)/2+SIZESPR,2)
-	print(text,SCREEN.w-SIZESPR*5-(#text*SIZEFONT)/2,y+6,COLORID.WHITE)
-	print("Score: "..score,1,y,COLORID.WHITE,false,2)
+	print(text,SCREEN.w-SIZESPR*5-(#text*SIZEFONT)/2,y+6,c)
+	print("Score: "..score,1,y,c,false,2)
 end
 
 function DisplayScore_Create(pX,pY,pAmount,pColor)
@@ -2439,51 +2443,52 @@ function SceneGameOver_Draw()
 end
 
 WorldMap_Create()
+m,wm,g,v,go="menu","worldmap","gameplay","victory","gameover"
+ax,ay="allX","allY"
+CreateScene(m,SceneMenu_Update,SceneMenu_Draw,SceneMenu_Start,SceneMenu_End)
+CreateScene(wm,SceneWorldMap_Update,SceneWorldMap_Draw,SceneWorldMap_Start,SceneWorldMap_End)
+CreateScene(g,SceneGameplay_Update,SceneGameplay_Draw,SceneGameplay_Start,SceneGameplay_End)
+CreateScene(v,SceneVictory_Update,SceneVictory_Draw,SceneVictory_Start,SceneVictory_End)
+CreateScene(go,SceneGameOver_Update,SceneGameOver_Draw,SceneGameOver_Start,SceneGameOver_End)
 
-CreateScene("menu",SceneMenu_Update,SceneMenu_Draw,SceneMenu_Start,SceneMenu_End)
-CreateScene("worldmap",SceneWorldMap_Update,SceneWorldMap_Draw,SceneWorldMap_Start,SceneWorldMap_End)
-CreateScene("gameplay",SceneGameplay_Update,SceneGameplay_Draw,SceneGameplay_Start,SceneGameplay_End)
-CreateScene("victory",SceneVictory_Update,SceneVictory_Draw,SceneVictory_Start,SceneVictory_End)
-CreateScene("gameover",SceneGameOver_Update,SceneGameOver_Draw,SceneGameOver_Start,SceneGameOver_End)
-
-local duration=1
-local tin=SetTransitionSceneIn
-local out=SetTransitionSceneOut
-local tins=Tween_EaseInSine
-local touts=Tween_EaseOutSine
-tin("menu",touts,0.5)
-out("menu",tins,0.5)
-tin("worldmap",touts,duration)
-out("worldmap",tins,duration)
-tin("gameplay",touts,duration)
-out("gameplay",tins,duration)
-tin("victory",touts,duration)
-out("victory",tins,duration)
-tin("gameover",touts,duration)
-out("gameover",tins,duration)
+duration=1
+tin=SetTransitionSceneIn
+out=SetTransitionSceneOut
+tins=Tween_EaseInSine
+touts=Tween_EaseOutSine
+tin(m,touts,0.5)
+out(m,tins,0.5)
+tin(wm,touts,duration)
+out(wm,tins,duration)
+tin(g,touts,duration)
+out(g,tins,duration)
+tin(v,touts,duration)
+out(v,tins,duration)
+tin(go,touts,duration)
+out(go,tins,duration)
 
 tin=AddElementTransitionSceneIn
 out=AddElementTransitionSceneOut
 
-out("menu","gameplay","allY1",0,-SCREEN.h)
-out("menu","gameplay","allY2",0,SCREEN.h)
-tin("gameplay","menu","allX",0,SCREEN.w)
-tin("gameplay","worldmap","allX",0,SCREEN.w)
-out("gameplay","worldmap","allX",-SCREEN.w,0)
-tin("gameplay","victory","allY",0,-SCREEN.h)
-tin("gameplay","gameover","allY",0,SCREEN.h)
-out("gameplay","victory","allY",SCREEN.h,0)
-out("gameplay","gameover","allY",-SCREEN.h,0)
-tin("worldmap","gameplay","allX",0,SCREEN.w)
-out("worldmap","gameplay","allX",-SCREEN.w,0)
-out("worldmap","gameover","allY",-SCREEN.h,0)
-tin("victory","gameplay","allY",0,-SCREEN.h)
-out("victory","gameplay","allY",SCREEN.h,0)
-tin("gameover","worldmap","allY",0,SCREEN.h)
-tin("gameover","gameplay","allY",0,SCREEN.h)
-out("gameover","gameplay","allY",-SCREEN.h,0)
+out(m,g,"allY1",0,-SCREEN.h)
+out(m,g,"allY2",0,SCREEN.h)
+tin(g,m,ax,0,SCREEN.w)
+tin(g,wm,ax,0,SCREEN.w)
+out(g,wm,ax,-SCREEN.w,0)
+tin(g,v,ay,0,-SCREEN.h)
+tin(g,go,ay,0,SCREEN.h)
+out(g,v,ay,SCREEN.h,0)
+out(g,go,ay,-SCREEN.h,0)
+tin(wm,g,ax,0,SCREEN.w)
+out(wm,g,ax,-SCREEN.w,0)
+out(wm,go,ay,-SCREEN.h,0)
+tin(v,g,ay,0,-SCREEN.h)
+out(v,g,ay,SCREEN.h,0)
+tin(go,wm,ay,0,SCREEN.h)
+tin(go,g,ay,0,SCREEN.h)
+out(go,g,ay,-SCREEN.h,0)
 
-SwitchScene("menu")
+SwitchScene(m)
 safetyZone.anim=Animation_Create({333,399},0.5,true)
 
 Game_Generate()
