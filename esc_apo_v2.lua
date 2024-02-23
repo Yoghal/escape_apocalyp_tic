@@ -41,19 +41,18 @@ function Tween_EaseInOutSine(pStart,pEnd,pCurrentTime,pDuration)
 	return -(pEnd-pStart)/2*(math.cos(PI*pCurrentTime/pDuration)-1)+pStart;
 end
 
+function include(item,list)
+	for i,ele in ipairs(list) do
+		if item==ele then return true end
+	end
+	return false
+end
+
 function PFAStar(pSLine,pSCol,pELine,pECol,pGrid)
 	local newGrid={}
 	local openSet={}
 	local closeSet={}
 
-	function include(item,list)
-		for i,ele in ipairs(list) do
-			if item==ele then
-				return true
-			end
-		end
-		return false
-	end
 	for l=1,#pGrid do
 		newGrid[l]={}
 		for c=1,#pGrid[l] do
